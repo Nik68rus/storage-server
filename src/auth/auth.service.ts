@@ -24,6 +24,9 @@ export class AuthService {
 
   async register(dto: CreateUserDto) {
     try {
+      const existingUser = await this.userService.findByEmail(dto.email);
+      if (existingUser) throw new Error('Пользователь уже существует');
+
       const userData = await this.userService.create(dto);
       return {
         token: this.jwtService.sign({ id: userData.id }),
