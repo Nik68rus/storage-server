@@ -7,12 +7,12 @@ import { UsersService } from 'src/users/users.service';
 @Injectable()
 export class AuthService {
   constructor(
-    private userService: UsersService,
+    private usersService: UsersService,
     private jwtService: JwtService,
   ) {}
 
   async validateUser(email: string, password: string) {
-    const user = await this.userService.findByEmail(email);
+    const user = await this.usersService.findByEmail(email);
 
     if (user && user.password === password) {
       const { password, ...result } = user;
@@ -24,10 +24,10 @@ export class AuthService {
 
   async register(dto: CreateUserDto) {
     try {
-      const existingUser = await this.userService.findByEmail(dto.email);
+      const existingUser = await this.usersService.findByEmail(dto.email);
       if (existingUser) throw new Error('Пользователь уже существует');
 
-      const userData = await this.userService.create(dto);
+      const userData = await this.usersService.create(dto);
       return {
         token: this.jwtService.sign({ id: userData.id }),
       };
